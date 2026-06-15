@@ -39,9 +39,6 @@ npm run new-meme "TÍTULO DO MEME"
 
 Preparado para publicar no domínio `pepixel.xyz`.
 
-- Arquivo de domínio incluído: [CNAME](CNAME)
-- Workflow do GitHub Actions incluído: [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml)
-
 Passos para publicar:
 
 1. Faça push para a branch `main`. O workflow fará deploy para a branch `gh-pages`.
@@ -56,4 +53,11 @@ Passos para publicar:
 
 3. Aguarde a propagação do DNS (algumas horas) e verifique em `https://pepixel.xyz`.
 
+## Endereço oficial (Doações / DMs)
+
+O endereço oficial usado pelo projeto para transações/Doações em DMs é:
+
+`DMsSyCX6PCLCNs1i4DeTrv9X9n9t42m5UMzDakX7pump`
+
+Use com responsabilidade; o projeto não se responsabiliza por transferências incorretas.
 Observação: se preferir usar um subdomínio (`www.pepixel.xyz`), crie um registro CNAME apontando para `your-github-username.github.io`.
