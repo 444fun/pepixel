@@ -417,10 +417,26 @@
       <p class="text-xs mt-4 text-gray-500">
         <div style="margin-top:12px; padding:8px; background:#0f2610; display:inline-block; border-radius:8px;">
           <strong style="color:#A5D6A7;">Endereço oficial (DMs):</strong>
-          <span style="color:#E6FFEA; margin-left:8px; font-family:monospace;">DMsSyCX6PCLCNs1i4DeTrv9X9n9t42m5UMzDakX7pump</span>
+          <span id="dms-address" style="color:#E6FFEA; margin-left:8px; font-family:monospace;">DMsSyCX6PCLCNs1i4DeTrv9X9n9t42m5UMzDakX7pump</span>
+          <button id="copy-dms-btn" onclick="copyDMs('dms-address','copy-dms-btn')" style="margin-left:8px;padding:4px 8px;border-radius:6px;background:#234d2b;color:#e6ffea;border:0;">Copiar</button>
         </div>
         PepixelCraft © 2026 - Sobrevivência garantida
       </p>
     </footer>
+    <script>
+      function copyDMs(addrId, btnId) {
+        try {
+          const addr = document.getElementById(addrId).textContent.trim();
+          const btn = document.getElementById(btnId);
+          navigator.clipboard.writeText(addr).then(() => {
+            const prev = btn.textContent;
+            btn.textContent = 'Copiado!';
+            setTimeout(() => (btn.textContent = prev), 2000);
+          }).catch(() => { alert('Não foi possível copiar o endereço.'); });
+        } catch (e) {
+          alert('Erro ao copiar.');
+        }
+      }
+    </script>
   </body>
 </html>

@@ -256,9 +256,25 @@
         "
       >
         <strong>Endereço oficial (DMs):</strong>
-        <span style="font-family: monospace; margin-left: 8px"
+        <span
+          id="dms-address-mobile-alt"
+          style="font-family: monospace; margin-left: 8px"
           >DMsSyCX6PCLCNs1i4DeTrv9X9n9t42m5UMzDakX7pump</span
         >
+        <button
+          id="copy-dms-btn-mobile-alt"
+          onclick="copyDMs('dms-address-mobile-alt', 'copy-dms-btn-mobile-alt')"
+          style="
+            margin-left: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #234d2b;
+            color: #e6ffea;
+            border: 0;
+          "
+        >
+          Copiar
+        </button>
       </div>
     </div>
 
@@ -334,4 +350,24 @@
       )();
     </script>
   </body>
+  <script>
+    function copyDMs(addrId, btnId) {
+      try {
+        const addr = document.getElementById(addrId).textContent.trim();
+        const btn = document.getElementById(btnId);
+        navigator.clipboard
+          .writeText(addr)
+          .then(() => {
+            const prev = btn.textContent;
+            btn.textContent = "Copiado!";
+            setTimeout(() => (btn.textContent = prev), 2000);
+          })
+          .catch(() => {
+            alert("Não foi possível copiar o endereço.");
+          });
+      } catch (e) {
+        alert("Erro ao copiar.");
+      }
+    }
+  </script>
 </html>
