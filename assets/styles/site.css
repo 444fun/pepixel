@@ -20,3 +20,26 @@ body {
 }
 
 /* Optional: keep readable text defaults (don't force text color here) */
+
+/* Make price panels sticky below the header so they remain visible on scroll */
+.price-panel {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 72px; /* adjust if header height changes */
+  z-index: 60;
+}
+
+/* Make page titles sticky when scrolling */
+.page-title {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 72px;
+  z-index: 55;
+  background: rgba(
+    30,
+    61,
+    30,
+    0.9
+  ); /* subtle background to avoid overlap readability */
+  padding: 8px 0;
+}
