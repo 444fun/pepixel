@@ -1,5 +1,5 @@
 const fs = require("fs");
-const src = "assets/images/PEPIXEL PERFIL.jpeg";
+const src = "assets/images/pepixel-perfil.jpeg";
 const dest = "assets/images/PEPIXELGOD.jpeg";
 
 fs.copyFile(src, dest, (err) => {
