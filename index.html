@@ -47,6 +47,21 @@
     </style>
   </head>
   <body id="top" class="bg-[#3C2F1E] text-[#E5E5E5] minecraft-bg min-h-screen">
+    <script>
+      (function(){
+        try{
+          const url = new URL(window.location.href);
+          if (url.searchParams.has('no_mobile')) return;
+          const ua = navigator.userAgent || '';
+          const isMobileUA = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(ua);
+          const smallScreen = Math.max(window.screen.width || 0, window.screen.height || 0) <= 720;
+          if (isMobileUA || smallScreen) {
+            // use replace to avoid polluting history
+            window.location.replace('mobile-index.html');
+          }
+        }catch(e){/* ignore */}
+      })();
+    </script>
     <!-- HEADER -->
     <header
       class="border-b-4 border-[#4CAF50] bg-[#2E2E2E] py-4 sticky top-0 z-50"
