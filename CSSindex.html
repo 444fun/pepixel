@@ -341,23 +341,63 @@
 
       // Try to fetch token info via CoinGecko (Solana platform) and market chart
       async function fetchAndRender() {
+        // Attempt BirdEye first (preferred source)
+        try {
+          const beUrl = `https://birdeye.so/token/${CONTRACT_ADDRESS}?chain=solana`;
+          const beRes = await fetch(beUrl);
+          if (beRes.ok) {
+            const html = await beRes.text();
+            let m = html.match(/"price"\s*[:=]\s*"?([0-9]+(?:\.[0-9]+)?)"?/i);
+            if (!m) m = html.match(/\$\s*([0-9]+(?:\.[0-9]+)?)/);
+            if (m) {
+              const p = Number(m[1]);
+              if (!isNaN(p)) {
+                priceEl.textContent = "$" + p.toFixed(6);
+                changeEl.textContent = "(via BirdEye)";
+                changeEl.className = "change";
+                volumeEl.textContent = "-";
+                return; // stop; BirdEye provided price
+              }
+            }
+          }
+        } catch (beErr) {
+          console.warn("BirdEye fetch failed or CORS blocked", beErr);
+        }
+
         try {
           // try to get coin by contract on Solana
-          const infoRes = await fetch(`https://api.coingecko.com/api/v3/coins/solana/contract/${CONTRACT_ADDRESS}`);
+          const infoRes = await fetch(
+            `https://api.coingecko.com/api/v3/coins/solana/contract/${CONTRACT_ADDRESS}`,
+          );
           if (infoRes.ok) {
             const info = await infoRes.json();
             // update price and change using market_data if available
-            if (info.market_data && info.market_data.current_price && info.market_data.current_price.usd) {
-              priceEl.textContent = "$" + Number(info.market_data.current_price.usd).toFixed(6);
+            if (
+              info.market_data &&
+              info.market_data.current_price &&
+              info.market_data.current_price.usd
+            ) {
+              priceEl.textContent =
+                "$" + Number(info.market_data.current_price.usd).toFixed(6);
               const ch = info.market_data.price_change_percentage_24h;
-              changeEl.textContent = (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
-              changeEl.className = "change " + (ch >= 0 ? "positive" : "negative");
-              volumeEl.textContent = (info.market_data.total_volume && info.market_data.total_volume.usd) ? Math.round(info.market_data.total_volume.usd).toLocaleString() + " USD" : "-";
+              changeEl.textContent =
+                (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
+              changeEl.className =
+                "change " + (ch >= 0 ? "positive" : "negative");
+              volumeEl.textContent =
+                info.market_data.total_volume &&
+                info.market_data.total_volume.usd
+                  ? Math.round(
+                      info.market_data.total_volume.usd,
+                    ).toLocaleString() + " USD"
+                  : "-";
             }
 
             // fetch market_chart by coin id for 1 day
             if (info.id) {
-              const chartRes = await fetch(`https://api.coingecko.com/api/v3/coins/${info.id}/market_chart?vs_currency=usd&days=1`);
+              const chartRes = await fetch(
+                `https://api.coingecko.com/api/v3/coins/${info.id}/market_chart?vs_currency=usd&days=1`,
+              );
               if (chartRes.ok) {
                 const chart = await chartRes.json();
                 // chart.prices = [[ts, price], ...]
@@ -369,12 +409,14 @@
             }
           }
         } catch (e) {
-          console.warn('CoinGecko contract lookup failed', e);
+          console.warn("CoinGecko contract lookup failed", e);
         }
 
         // Fallback: try simple token price endpoint
         try {
-          const simpleRes = await fetch(`https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${CONTRACT_ADDRESS}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`);
+          const simpleRes = await fetch(
+            `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${CONTRACT_ADDRESS}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`,
+          );
           if (simpleRes.ok) {
             const json = await simpleRes.json();
             const key = Object.keys(json)[0];
@@ -382,16 +424,20 @@
             if (data && data.usd) {
               priceEl.textContent = "$" + Number(data.usd).toFixed(6);
               const ch = data.usd_24h_change || 0;
-              changeEl.textContent = (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
-              changeEl.className = "change " + (ch >= 0 ? "positive" : "negative");
-              volumeEl.textContent = data.usd_24h_vol ? Number(data.usd_24h_vol).toLocaleString() + " USD" : "-";
+              changeEl.textContent =
+                (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
+              changeEl.className =
+                "change " + (ch >= 0 ? "positive" : "negative");
+              volumeEl.textContent = data.usd_24h_vol
+                ? Number(data.usd_24h_vol).toLocaleString() + " USD"
+                : "-";
               // cannot fetch candles here; leave simulated drawing
               drawSimulated();
               return;
             }
           }
         } catch (e) {
-          console.warn('Simple price fetch failed', e);
+          console.warn("Simple price fetch failed", e);
         }
 
         // Final fallback: simulated
@@ -401,14 +447,21 @@
       function buildCandlesFromPrices(prices, targetCandles = 24) {
         if (!prices || prices.length === 0) return [];
         // compress prices into targetCandles buckets
-        const bucketSize = Math.max(1, Math.floor(prices.length / targetCandles));
+        const bucketSize = Math.max(
+          1,
+          Math.floor(prices.length / targetCandles),
+        );
         const candles = [];
         for (let i = 0; i < prices.length; i += bucketSize) {
           const chunk = prices.slice(i, i + bucketSize);
           const o = chunk[0][1];
           const c = chunk[chunk.length - 1][1];
-          let h = -Infinity, l = Infinity;
-          chunk.forEach(p => { h = Math.max(h, p[1]); l = Math.min(l, p[1]); });
+          let h = -Infinity,
+            l = Infinity;
+          chunk.forEach((p) => {
+            h = Math.max(h, p[1]);
+            l = Math.min(l, p[1]);
+          });
           candles.push({ o, h, l, c });
         }
         return candles.slice(-targetCandles);
@@ -419,7 +472,7 @@
         ctx.fillStyle = "#0a1f0a";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         const w = canvas.width / data.length;
-        const values = data.flatMap(d => [d.h, d.l]);
+        const values = data.flatMap((d) => [d.h, d.l]);
         const maxPrice = Math.max(...values);
         const minPrice = Math.min(...values);
         const range = Math.max(1e-8, maxPrice - minPrice);
@@ -427,7 +480,8 @@
         data.forEach((candle, i) => {
           const x = i * w + w * 0.2;
           const bodyTop = canvas.height * (1 - (candle.h - minPrice) / range);
-          const bodyBottom = canvas.height * (1 - (candle.l - minPrice) / range);
+          const bodyBottom =
+            canvas.height * (1 - (candle.l - minPrice) / range);
           const openY = canvas.height * (1 - (candle.o - minPrice) / range);
           const closeY = canvas.height * (1 - (candle.c - minPrice) / range);
 
