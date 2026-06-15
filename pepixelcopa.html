@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COPA 2026 • PEPIXEL COPA 26</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      body {
+        background-color: #0a1f0a;
+        background-image:
+          linear-gradient(#112211 1px, transparent 1px),
+          linear-gradient(90deg, #112211 1px, transparent 1px);
+        background-size: 8px 8px;
+        image-rendering: pixelated;
+      }
+
+      .pixel-font {
+        font-family: "Press Start 2P", monospace;
+        image-rendering: pixelated;
+        letter-spacing: 1px;
+      }
+
+      .mc-border {
+        border: 6px solid #1a331a;
+        box-shadow: 0 0 0 3px #4ade80;
+      }
+
+      .mc-button {
+        border: 6px solid #1a331a;
+        box-shadow: 0 0 0 3px #4ade80;
+        transition: all 0.1s ease;
+        image-rendering: pixelated;
+      }
+
+      .mc-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 0 3px #86efac;
+      }
+
+      .mc-card {
+        border: 6px solid #1a331a;
+        box-shadow: 0 0 0 3px #4ade80;
+        image-rendering: pixelated;
+      }
+
+      .score {
+        font-family: "Press Start 2P", monospace;
+        font-size: 2.5rem;
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .status-ft {
+        background-color: #166534;
+        color: #86efac;
+        border: 3px solid #1a331a;
+      }
+
+      .status-next {
+        background-color: #4ade80;
+        color: #0a1f0a;
+        border: 3px solid #1a331a;
+      }
+
+      .match-row {
+        border: 4px solid #1a331a;
+      }
+    </style>
+  </head>
+  <body class="text-white min-h-screen">
+    <div class="max-w-5xl mx-auto p-6">
+      <!-- Header Minecraft Style -->
+      <div class="mc-card bg-[#112211] p-8 mb-8">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-16 h-16 bg-[#1a331a] mc-border flex items-center justify-center"
+            >
+              <i class="fa-solid fa-tachometer-alt text-5xl text-[#4ade80]"></i>
+            </div>
+            <div>
+              <h1 class="pixel-font text-3xl text-[#4ade80]">COPA 2026</h1>
+              <p class="text-[#86efac] text-sm tracking-[3px]">
+                PIPIXEL EDITION
+              </p>
+            </div>
+          </div>
+
+          <button
+            onclick="atualizarPlacar()"
+            class="mc-button px-8 py-4 bg-[#1a331a] hover:bg-[#224422] pixel-font text-sm flex items-center gap-3"
+          >
+            <i class="fa-solid fa-sync-alt"></i>
+            <span>ATUALIZAR</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Jogos de Hoje -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4 px-2">
+          <i class="fa-solid fa-calendar-day text-[#4ade80] text-2xl"></i>
+          <h2 class="pixel-font text-xl text-[#4ade80]">
+            JOGOS DE HOJE — 15 JUN
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Espanha x Cabo Verde -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between text-xs mb-3 text-[#4a704a]">
+              <span>GRUPO H • 11:00</span>
+              <span class="status-next px-3 py-0.5 text-xs rounded pixel-font"
+                >PRÓXIMO</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇪🇸</span>
+                <div class="pixel-font text-sm">ESPANHA</div>
+              </div>
+              <div class="score text-[#4ade80]">—</div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font text-sm">CABO VERDE</div>
+                <span class="text-3xl">🇨🇻</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arábia Saudita x Uruguai -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between text-xs mb-3 text-[#4a704a]">
+              <span>GRUPO H • 14:00</span>
+              <span class="status-next px-3 py-0.5 text-xs rounded pixel-font"
+                >PRÓXIMO</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇸🇦</span>
+                <div class="pixel-font text-sm">ARÁBIA SAUDITA</div>
+              </div>
+              <div class="score text-[#4ade80]">—</div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font text-sm">URUGUAI</div>
+                <span class="text-3xl">🇺🇾</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bélgica x Egito -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between text-xs mb-3 text-[#4a704a]">
+              <span>GRUPO G • 17:00</span>
+              <span class="status-next px-3 py-0.5 text-xs rounded pixel-font"
+                >PRÓXIMO</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇧🇪</span>
+                <div class="pixel-font text-sm">BÉLGICA</div>
+              </div>
+              <div class="score text-[#4ade80]">—</div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font text-sm">EGITO</div>
+                <span class="text-3xl">🇪🇬</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultados Recentes -->
+      <div>
+        <div class="flex items-center gap-3 mb-4 px-2">
+          <i class="fa-solid fa-history text-[#4ade80] text-2xl"></i>
+          <h2 class="pixel-font text-xl text-[#4ade80]">RESULTADOS RECENTES</h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Alemanha 7-1 Curaçao -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs text-[#4a704a] pixel-font"
+                >14 JUN • GRUPO E</span
+              >
+              <span class="status-ft px-4 py-1 text-xs rounded pixel-font"
+                >FT</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇩🇪</span>
+                <div class="pixel-font">ALEMANHA</div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="score text-[#4ade80]">7</div>
+                <div class="text-[#4a704a] text-2xl">×</div>
+                <div class="score text-[#4ade80]">1</div>
+              </div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font">CURAÇAO</div>
+                <span class="text-3xl">🇨🇼</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Países Baixos 2-2 Japão -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs text-[#4a704a] pixel-font"
+                >14 JUN • GRUPO F</span
+              >
+              <span class="status-ft px-4 py-1 text-xs rounded pixel-font"
+                >FT</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇳🇱</span>
+                <div class="pixel-font">PAÍSES BAIXOS</div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="score text-[#4ade80]">2</div>
+                <div class="text-[#4a704a] text-2xl">×</div>
+                <div class="score text-[#4ade80]">2</div>
+              </div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font">JAPÃO</div>
+                <span class="text-3xl">🇯🇵</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Austrália 2-0 Turquia -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs text-[#4a704a] pixel-font"
+                >14 JUN • GRUPO D</span
+              >
+              <span class="status-ft px-4 py-1 text-xs rounded pixel-font"
+                >FT</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇦🇺</span>
+                <div class="pixel-font">AUSTRÁLIA</div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="score text-[#4ade80]">2</div>
+                <div class="text-[#4a704a] text-2xl">×</div>
+                <div class="score text-[#4ade80]">0</div>
+              </div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font">TURQUIA</div>
+                <span class="text-3xl">🇹🇷</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Brasil 1-1 Marrocos -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs text-[#4a704a] pixel-font"
+                >13 JUN • GRUPO C</span
+              >
+              <span class="status-ft px-4 py-1 text-xs rounded pixel-font"
+                >FT</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇧🇷</span>
+                <div class="pixel-font">BRASIL</div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="score text-[#4ade80]">1</div>
+                <div class="text-[#4a704a] text-2xl">×</div>
+                <div class="score text-[#4ade80]">1</div>
+              </div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font">MARROCOS</div>
+                <span class="text-3xl">🇲🇦</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- EUA 4-1 Paraguai -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs text-[#4a704a] pixel-font"
+                >12 JUN • GRUPO D</span
+              >
+              <span class="status-ft px-4 py-1 text-xs rounded pixel-font"
+                >FT</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇺🇸</span>
+                <div class="pixel-font">ESTADOS UNIDOS</div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="score text-[#4ade80]">4</div>
+                <div class="text-[#4a704a] text-2xl">×</div>
+                <div class="score text-[#4ade80]">1</div>
+              </div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font">PARAGUAI</div>
+                <span class="text-3xl">🇵🇾</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- México 2-0 África do Sul -->
+          <div class="mc-card bg-[#112211] p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs text-[#4a704a] pixel-font"
+                >11 JUN • GRUPO A</span
+              >
+              <span class="status-ft px-4 py-1 text-xs rounded pixel-font"
+                >FT</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🇲🇽</span>
+                <div class="pixel-font">MÉXICO</div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="score text-[#4ade80]">2</div>
+                <div class="text-[#4a704a] text-2xl">×</div>
+                <div class="score text-[#4ade80]">0</div>
+              </div>
+              <div class="flex items-center gap-3 text-right">
+                <div class="pixel-font">ÁFRICA DO SUL</div>
+                <span class="text-3xl">🇿🇦</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <p class="text-[#4a704a] text-xs pixel-font">
+          DADOS ATUALIZADOS • 15 JUN 2026 • FONTE: FIFA / ESPN
+        </p>
+        <p class="text-[#4a704a] text-[10px] mt-1">
+          Pressione R para atualizar • Estilo Minecraft Pixel
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function atualizarPlacar() {
+        const btns = document.querySelectorAll("button");
+        btns.forEach((btn) => {
+          if (btn.textContent.includes("ATUALIZAR")) {
+            const original = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>ATUALIZANDO...</span>`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+              btn.innerHTML = original;
+              btn.disabled = false;
+
+              const toast = document.createElement("div");
+              toast.className =
+                "fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a331a] mc-border px-8 py-3 pixel-font text-sm flex items-center gap-3";
+              toast.innerHTML = `PLACAR ATUALIZADO COM SUCESSO!`;
+              document.body.appendChild(toast);
+
+              setTimeout(() => {
+                toast.style.transition = "all 0.3s";
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 300);
+              }, 1800);
+            }, 900);
+          }
+        });
+      }
+
+      // Tecla R para atualizar
+      document.addEventListener("keydown", function (e) {
+        if (e.key.toLowerCase() === "r") {
+          atualizarPlacar();
+        }
+      });
+
+      console.log(
+        "%c[COPA 2026 PIXEL] Página carregada no estilo Minecraft",
+        "color:#4ade80",
+      );
+    </script>
+  </body>
+</html>

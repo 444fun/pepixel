@@ -1,0 +1,16 @@
+{
+  "name": "pepixelcraft",
+  "version": "1.0.0",
+  "description": "Site estático PepixelCraft - Galeria de Memes",
+  "homepage": "https://pepixel.xyz",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -c-1 . -p 8080",
+    "build-images": "node scripts/generate_thumbnails.js",
+    "new-meme": "node scripts/new_meme.js"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "sharp": "^0.32.4"
+  }
+}

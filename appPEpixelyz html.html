@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAIXA DE MENSAGENS • MINECRAFT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    :root {
+      --mc-green-dark: #0a1f0a;
+      --mc-green: #112211;
+      --mc-green-light: #1a331a;
+      --mc-lime: #4ade80;
+    }
+    
+    body {
+      background-color: #0a1f0a;
+      background-image: 
+        linear-gradient(#112211 1px, transparent 1px),
+        linear-gradient(90deg, #112211 1px, transparent 1px);
+      background-size: 8px 8px;
+      image-rendering: pixelated;
+    }
+    
+    .pixel-font {
+      font-family: 'Press Start 2P', monospace;
+      image-rendering: pixelated;
+    }
+    
+    .mc-border {
+      border: 6px solid #1a331a;
+      box-shadow: 0 0 0 3px #4ade80;
+    }
+    
+    .mc-button {
+      border: 6px solid #1a331a;
+      box-shadow: 0 0 0 3px #4ade80;
+      transition: all 0.1s ease;
+      image-rendering: pixelated;
+    }
+    
+    .mc-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 3px #86efac;
+    }
+    
+    .mc-button:active {
+      transform: translateY(2px);
+    }
+    
+    .mc-card {
+      border: 6px solid #1a331a;
+      box-shadow: 0 0 0 3px #4ade80;
+      image-rendering: pixelated;
+    }
+    
+    .tab {
+      border-bottom: 6px solid transparent;
+      transition: all 0.1s ease;
+    }
+    
+    .tab-active {
+      border-bottom: 6px solid #4ade80;
+      color: #4ade80;
+    }
+    
+    .message-card {
+      border: 6px solid #1a331a;
+      box-shadow: 0 0 0 3px #4ade80;
+      image-rendering: pixelated;
+      transition: all 0.1s ease;
+    }
+    
+    .message-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 3px #86efac;
+    }
+    
+    input, textarea {
+      border: 6px solid #1a331a !important;
+      box-shadow: 0 0 0 3px #4ade80;
+      image-rendering: pixelated;
+    }
+    
+    .pixel-text {
+      font-family: 'Press Start 2P', monospace;
+      image-rendering: pixelated;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white">
+  <div class="max-w-2xl mx-auto p-6">
+    <!-- Cabeçalho estilo Minecraft -->
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-16 h-16 bg-[#1a331a] mc-border flex items-center justify-center">
+        <i class="fa-solid fa-comments text-4xl text-[#4ade80]"></i>
+      </div>
+      <div>
+        <h1 class="pixel-text text-3xl text-[#4ade80]">CAIXA DE MENSAGENS</h1>
+        <p class="text-[#86efac] text-sm tracking-widest">ESTILO MINECRAFT • PIXEL</p>
+      </div>
+    </div>
+
+    <!-- Abas -->
+    <div class="flex border-b-4 border-[#1a331a] mb-6">
+      <button onclick="switchTab(0)" 
+              class="tab px-8 py-4 text-lg flex items-center gap-3 pixel-text tab-active" id="tab-0">
+        <i class="fa-solid fa-pen-nib"></i>
+        <span>ESCREVER</span>
+      </button>
+      <button onclick="switchTab(1)" 
+              class="tab px-8 py-4 text-lg flex items-center gap-3 text-[#86efac] hover:text-white pixel-text" id="tab-1">
+        <i class="fa-solid fa-inbox"></i>
+        <span>LER MENSAGENS</span>
+        <span id="message-count" 
+              class="ml-2 px-3 py-1 text-xs bg-[#1a331a] mc-border text-[#4ade80]">0</span>
+      </button>
+    </div>
+
+    <!-- ABA 1: Escrever -->
+    <div id="content-0">
+      <div class="mc-card bg-[#112211] p-8">
+        <div class="space-y-6">
+          <div>
+            <label class="block pixel-text text-sm mb-3 text-[#86efac]">SEU NOME</label>
+            <input id="name-input" type="text" placeholder="DIGITE SEU NOME"
+                   class="w-full bg-[#0a1f0a] px-6 py-4 text-lg focus:outline-none placeholder:text-[#4a704a]">
+          </div>
+
+          <div>
+            <label class="block pixel-text text-sm mb-3 text-[#86efac]">SUA MENSAGEM</label>
+            <textarea id="message-input" rows="5" placeholder="ESCREVA SUA MENSAGEM AQUI..."
+                      class="w-full bg-[#0a1f0a] px-6 py-4 text-lg focus:outline-none placeholder:text-[#4a704a] resize-y"></textarea>
+          </div>
+
+          <button onclick="sendMessage()"
+                  class="mc-button w-full bg-[#1a331a] hover:bg-[#224422] py-5 pixel-text text-xl flex items-center justify-center gap-3">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>ENVIAR MENSAGEM</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 2: Ler Mensagens -->
+    <div id="content-1" class="hidden">
+      <div class="flex justify-between items-center mb-4 px-1">
+        <h2 class="pixel-text text-xl text-[#4ade80]">MENSAGENS RECEBIDAS</h2>
+        <button onclick="clearAllMessages()" 
+                class="px-5 py-2 text-sm text-red-400 hover:text-red-500 flex items-center gap-2 pixel-text">
+          <i class="fa-solid fa-trash"></i>
+          <span>LIMPAR TUDO</span>
+        </button>
+      </div>
+
+      <div id="messages-list" class="space-y-4">
+        <!-- Mensagens inseridas via JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let messages = [];
+
+    function loadMessages() {
+      const saved = localStorage.getItem('mc_messages');
+      if (saved) messages = JSON.parse(saved);
+      updateMessageCount();
+    }
+
+    function saveMessages() {
+      localStorage.setItem('mc_messages', JSON.stringify(messages));
+      updateMessageCount();
+    }
+
+    function updateMessageCount() {
+      const countEl = document.getElementById('message-count');
+      if (countEl) countEl.textContent = messages.length;
+    }
+
+    function sendMessage() {
+      const name = document.getElementById('name-input').value.trim();
+      const message = document.getElementById('message-input').value.trim();
+
+      if (!name || !message) {
+        alert('PREENCHA SEU NOME E A MENSAGEM!');
+        return;
+      }
+
+      const newMessage = {
+        id: Date.now(),
+        name: name,
+        message: message,
+        timestamp: new Date().toISOString()
+      };
+
+      messages.unshift(newMessage);
+      saveMessages();
+
+      document.getElementById('name-input').value = '';
+      document.getElementById('message-input').value = '';
+
+      switchTab(1);
+      renderMessages();
+    }
+
+    function renderMessages() {
+      const container = document.getElementById('messages-list');
+      container.innerHTML = '';
+
+      if (messages.length === 0) {
+        container.innerHTML = `
+          <div class="mc-card bg-[#112211] p-10 text-center">
+            <i class="fa-solid fa-inbox text-6xl text-[#4ade80] mb-4"></i>
+            <p class="pixel-text text-[#86efac]">NENHUMA MENSAGEM AINDA</p>
+            <p class="text-sm mt-2 text-[#4a704a]">SEJA O PRIMEIRO A ESCREVER!</p>
+          </div>
+        `;
+        return;
+      }
+
+      messages.forEach(msg => {
+        const date = new Date(msg.timestamp);
+        const formattedDate = date.toLocaleDateString('pt-BR') + ' • ' + 
+                              date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        const div = document.createElement('div');
+        div.className = `mc-card message-card bg-[#112211] p-6`;
+        div.innerHTML = `
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <div class="pixel-text text-[#4ade80] text-lg">${msg.name}</div>
+              <div class="text-xs text-[#4a704a] mt-1">${formattedDate}</div>
+            </div>
+            <button onclick="deleteMessage(${msg.id})" 
+                    class="text-red-400 hover:text-red-500 p-2 text-xl">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+          <div class="text-[#e0f0e0] leading-relaxed text-[15px]">${msg.message}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function deleteMessage(id) {
+      if (!confirm('APAGAR ESTA MENSAGEM?')) return;
+      messages = messages.filter(m => m.id !== id);
+      saveMessages();
+      renderMessages();
+    }
+
+    function clearAllMessages() {
+      if (!confirm('APAGAR TODAS AS MENSAGENS?')) return;
+      messages = [];
+      localStorage.removeItem('mc_messages');
+      renderMessages();
+      updateMessageCount();
+    }
+
+    function switchTab(tabIndex) {
+      document.getElementById('content-0').classList.add('hidden');
+      document.getElementById('content-1').classList.add('hidden');
+
+      document.getElementById('tab-0').classList.remove('tab-active');
+      document.getElementById('tab-0').classList.add('text-[#86efac]');
+      document.getElementById('tab-1').classList.remove('tab-active');
+      document.getElementById('tab-1').classList.add('text-[#86efac]');
+
+      if (tabIndex === 0) {
+        document.getElementById('content-0').classList.remove('hidden');
+        document.getElementById('tab-0').classList.add('tab-active');
+        document.getElementById('tab-0').classList.remove('text-[#86efac]');
+      } else {
+        document.getElementById('content-1').classList.remove('hidden');
+        document.getElementById('tab-1').classList.add('tab-active');
+        document.getElementById('tab-1').classList.remove('text-[#86efac]');
+        renderMessages();
+      }
+    }
+
+    function init() {
+      loadMessages();
+      
+      // Começa na aba Escrever
+      document.getElementById('content-0').classList.remove('hidden');
+      document.getElementById('content-1').classList.add('hidden');
+      document.getElementById('tab-0').classList.add('tab-active');
+      
+      // Enter para enviar
+      const msgInput = document.getElementById('message-input');
+      msgInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      
+      updateMessageCount();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

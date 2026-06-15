@@ -1,0 +1,186 @@
+<section
+  id="mining-block"
+  style="
+    background: #0a1f0a;
+    padding: 60px 20px;
+    color: #aaffaa;
+    font-family: &quot;Press Start 2P&quot;, system-ui;
+    text-align: center;
+  "
+>
+  <h2
+    style="
+      color: #00cc66;
+      font-size: 32px;
+      margin-bottom: 40px;
+      text-shadow: 4px 4px 0 #003300;
+    "
+  >
+    ⛏️ BLOCO DE MINERAÇÃO PEPIXEL
+  </h2>
+
+  <div
+    style="
+      max-width: 920px;
+      margin: 0 auto;
+      background: #0f2a0f;
+      border: 14px solid #1e3d1e;
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: 0 0 50px rgba(0, 255, 80, 0.25);
+      position: relative;
+      overflow: hidden;
+    "
+  >
+    <!-- Bloco Pixelado -->
+    <div
+      id="pixel-block"
+      style="
+        width: 240px;
+        height: 240px;
+        margin: 0 auto 35px;
+        background: linear-gradient(145deg, #00aa55, #006633);
+        border: 16px solid #003300;
+        box-shadow:
+          inset 0 0 40px rgba(255, 255, 255, 0.3),
+          0 25px 0 #004422;
+        position: relative;
+        transition: all 0.4s;
+        overflow: hidden;
+      "
+    >
+      <!-- Vídeo local: coloque 'pepixel luanar.mp4' em assets/videos/ -->
+      <video
+        autoplay
+        loop
+        muted
+        playsinline
+        style="width: 100%; height: 100%; object-fit: cover; display: block"
+      >
+        <source src="pepixel-luanar.mp4" type="video/mp4" />
+        Seu navegador não suporta vídeo.
+      </video>
+
+      <div
+        style="
+          position: absolute;
+          bottom: 28px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 22px;
+          color: #ffffff;
+          font-weight: bold;
+          text-shadow: 3px 3px 0 #000;
+          letter-spacing: 2px;
+        "
+      >
+        PEPIXEL
+      </div>
+    </div>
+
+    <h3 style="color: #00cc66; margin-bottom: 8px">Endereço do Contrato</h3>
+    <div
+      style="
+        background: #0a1f0a;
+        padding: 16px;
+        font-size: 14px;
+        word-break: break-all;
+        border: 6px solid #1e3d1e;
+        margin-bottom: 30px;
+        color: #88ff88;
+      "
+    >
+      <code id="contract-address" style="color: #00ff80"
+        >o endereço de contrato está em nossos coraçães e em nossas fé</code
+      >
+    </div>
+
+    <!-- Estatísticas -->
+    <div
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 18px;
+      "
+    >
+      <div
+        style="background: #1e3d1e; padding: 18px; border: 6px solid #00cc66"
+      >
+        <div style="font-size: 13px; color: #88ff88">PREÇO ATUAL</div>
+        <div
+          id="price"
+          style="font-size: 26px; color: #00ff80; font-weight: bold"
+        >
+          $0.004289
+        </div>
+      </div>
+
+      <div
+        style="background: #1e3d1e; padding: 18px; border: 6px solid #00cc66"
+      >
+        <div style="font-size: 13px; color: #88ff88">COMPRAS (24h)</div>
+        <div
+          id="buys"
+          style="font-size: 26px; color: #00ff80; font-weight: bold"
+        >
+          1.284
+        </div>
+      </div>
+
+      <div
+        style="background: #1e3d1e; padding: 18px; border: 6px solid #ff4444"
+      >
+        <div style="font-size: 13px; color: #ff8888">VENDAS (24h)</div>
+        <div
+          id="sells"
+          style="font-size: 26px; color: #ff6666; font-weight: bold"
+        >
+          892
+        </div>
+      </div>
+
+      <div
+        style="background: #1e3d1e; padding: 18px; border: 6px solid #ffdd44"
+      >
+        <div style="font-size: 13px; color: #ffee88">VOLUME 24H</div>
+        <div
+          id="volume"
+          style="font-size: 26px; color: #ffdd44; font-weight: bold"
+        >
+          2.847 SOL
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed de Transações ao Vivo -->
+    <div style="margin-top: 40px">
+      <h4
+        style="
+          color: #00cc66;
+          margin-bottom: 12px;
+          text-align: left;
+          padding-left: 10px;
+        "
+      >
+        ⛏️ ÚLTIMAS TRANSAÇÕES (AO VIVO)
+      </h4>
+      <div
+        id="tx-feed"
+        style="
+          height: 260px;
+          overflow-y: auto;
+          background: #0a1f0a;
+          padding: 16px;
+          border: 8px solid #1e3d1e;
+          font-size: 14px;
+          text-align: left;
+          line-height: 1.7;
+        "
+      ></div>
+    </div>
+
+    <div style="margin-top: 30px; font-size: 13px; color: #66aa66">
+      Mineração em tempo real na Solana • Pepixel Community
+    </div>
+  </div>
+</section>
