@@ -43,3 +43,17 @@ body {
   ); /* subtle background to avoid overlap readability */
   padding: 8px 0;
 }
+
+/* DADOS button highlight */
+.dados-btn {
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+.dados-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+.dados-btn svg {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.05));
+}
