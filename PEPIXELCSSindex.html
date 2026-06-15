@@ -331,35 +331,110 @@
     </div>
 
     <script>
-      // Atualização de preço
-      let price = 0.004289;
+      // Real-time price + candles for Solana token contract
+      const CONTRACT_ADDRESS = "DMsSyCX6PCLCNs1i4DeTrv9X9n9t42m5UMzDakX7pump";
       const priceEl = document.getElementById("price");
       const changeEl = document.getElementById("change");
       const volumeEl = document.getElementById("volume");
-
-      function updatePrice() {
-        const variation = Math.random() * 0.0006 - 0.00025;
-        price = Math.max(0.003, parseFloat((price + variation).toFixed(6)));
-
-        priceEl.textContent = "$" + price.toFixed(6);
-
-        const percent = (Math.random() * 12 + 5).toFixed(1);
-        const positive = Math.random() > 0.35;
-
-        changeEl.textContent = (positive ? "+" : "") + percent + "% (24h)";
-        changeEl.className = "change " + (positive ? "positive" : "negative");
-
-        volumeEl.textContent = (Math.random() * 900 + 1200).toFixed(0) + "K";
-      }
-
-      // Gráfico de Velas Pixelado
       const canvas = document.getElementById("candleCanvas");
       const ctx = canvas.getContext("2d");
 
-      function drawCandlestick() {
+      async function fetchAndRender() {
+        try {
+          const infoRes = await fetch(`https://api.coingecko.com/api/v3/coins/solana/contract/${CONTRACT_ADDRESS}`);
+          if (infoRes.ok) {
+            const info = await infoRes.json();
+            if (info.market_data && info.market_data.current_price && info.market_data.current_price.usd) {
+              priceEl.textContent = "$" + Number(info.market_data.current_price.usd).toFixed(6);
+              const ch = info.market_data.price_change_percentage_24h;
+              changeEl.textContent = (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
+              changeEl.className = "change " + (ch >= 0 ? "positive" : "negative");
+              volumeEl.textContent = (info.market_data.total_volume && info.market_data.total_volume.usd) ? Math.round(info.market_data.total_volume.usd).toLocaleString() + " USD" : "-";
+            }
+            if (info.id) {
+              const chartRes = await fetch(`https://api.coingecko.com/api/v3/coins/${info.id}/market_chart?vs_currency=usd&days=1`);
+              if (chartRes.ok) {
+                const chart = await chartRes.json();
+                const prices = chart.prices || [];
+                const candles = buildCandlesFromPrices(prices, 24);
+                drawCandles(candles);
+                return;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('CoinGecko contract lookup failed', e);
+        }
+
+        try {
+          const simpleRes = await fetch(`https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${CONTRACT_ADDRESS}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`);
+          if (simpleRes.ok) {
+            const json = await simpleRes.json();
+            const key = Object.keys(json)[0];
+            const data = json[key];
+            if (data && data.usd) {
+              priceEl.textContent = "$" + Number(data.usd).toFixed(6);
+              const ch = data.usd_24h_change || 0;
+              changeEl.textContent = (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
+              changeEl.className = "change " + (ch >= 0 ? "positive" : "negative");
+              volumeEl.textContent = data.usd_24h_vol ? Number(data.usd_24h_vol).toLocaleString() + " USD" : "-";
+              drawSimulated();
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('Simple price fetch failed', e);
+        }
+
+        drawSimulated();
+      }
+
+      function buildCandlesFromPrices(prices, targetCandles = 24) {
+        if (!prices || prices.length === 0) return [];
+        const bucketSize = Math.max(1, Math.floor(prices.length / targetCandles));
+        const candles = [];
+        for (let i = 0; i < prices.length; i += bucketSize) {
+          const chunk = prices.slice(i, i + bucketSize);
+          const o = chunk[0][1];
+          const c = chunk[chunk.length - 1][1];
+          let h = -Infinity, l = Infinity;
+          chunk.forEach(p => { h = Math.max(h, p[1]); l = Math.min(l, p[1]); });
+          candles.push({ o, h, l, c });
+        }
+        return candles.slice(-targetCandles);
+      }
+
+      function drawCandles(data) {
+        if (!data || data.length === 0) return drawSimulated();
         ctx.fillStyle = "#0a1f0a";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const w = canvas.width / data.length;
+        const values = data.flatMap(d => [d.h, d.l]);
+        const maxPrice = Math.max(...values);
+        const minPrice = Math.min(...values);
+        const range = Math.max(1e-8, maxPrice - minPrice);
 
+        data.forEach((candle, i) => {
+          const x = i * w + w * 0.2;
+          const bodyTop = canvas.height * (1 - (candle.h - minPrice) / range);
+          const bodyBottom = canvas.height * (1 - (candle.l - minPrice) / range);
+          const openY = canvas.height * (1 - (candle.o - minPrice) / range);
+          const closeY = canvas.height * (1 - (candle.c - minPrice) / range);
+
+          ctx.strokeStyle = candle.c >= candle.o ? "#00ff80" : "#ff6666";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x + w / 2, bodyTop);
+          ctx.lineTo(x + w / 2, bodyBottom);
+          ctx.stroke();
+
+          const bodyHeight = Math.max(2, Math.abs(closeY - openY));
+          ctx.fillStyle = candle.c >= candle.o ? "#00ff80" : "#ff6666";
+          ctx.fillRect(x, Math.min(openY, closeY), w * 0.6, bodyHeight);
+        });
+      }
+
+      function drawSimulated() {
         const data = [
           { o: 0.0041, h: 0.0044, l: 0.004, c: 0.0043 },
           { o: 0.0043, h: 0.0046, l: 0.0042, c: 0.0045 },
@@ -369,49 +444,11 @@
           { o: 0.0049, h: 0.0051, l: 0.0047, c: 0.0048 },
           { o: 0.0048, h: 0.0052, l: 0.0047, c: 0.0051 },
         ];
-
-        const w = canvas.width / data.length;
-        const maxPrice = 0.0053;
-        const minPrice = 0.0039;
-        const range = maxPrice - minPrice;
-
-        data.forEach((candle, i) => {
-          const x = i * w + w * 0.3;
-          const bodyTop = canvas.height * (1 - (candle.h - minPrice) / range);
-          const bodyBottom =
-            canvas.height * (1 - (candle.l - minPrice) / range);
-          const openY = canvas.height * (1 - (candle.o - minPrice) / range);
-          const closeY = canvas.height * (1 - (candle.c - minPrice) / range);
-
-          // Wick
-          ctx.strokeStyle = candle.c >= candle.o ? "#00ff80" : "#ff6666";
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(x + w / 2, bodyTop);
-          ctx.lineTo(x + w / 2, bodyBottom);
-          ctx.stroke();
-
-          // Body
-          const bodyHeight = Math.abs(closeY - openY);
-          ctx.fillStyle = candle.c >= candle.o ? "#00ff80" : "#ff6666";
-          ctx.fillRect(
-            x,
-            Math.min(openY, closeY),
-            w * 0.4,
-            Math.max(bodyHeight, 4),
-          );
-        });
+        drawCandles(data);
       }
 
-      // Atualizações
-      setInterval(() => {
-        updatePrice();
-        drawCandlestick();
-      }, 1800);
-
-      // Inicialização
-      updatePrice();
-      drawCandlestick();
+      fetchAndRender();
+      setInterval(fetchAndRender, 60000);
     </script>
   </body>
 </html>
