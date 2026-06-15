@@ -378,27 +378,30 @@
         const ctx = canvas.getContext("2d");
 
         async function fetchAndRender() {
-          // Attempt BirdEye first (preferred source)
+          // Try serverless proxy for BirdEye first
           try {
-            const beUrl = `https://birdeye.so/token/${CONTRACT_ADDRESS}?chain=solana`;
-            const beRes = await fetch(beUrl);
-            if (beRes.ok) {
-              const html = await beRes.text();
-              let m = html.match(/"price"\s*[:=]\s*"?([0-9]+(?:\.[0-9]+)?)"?/i);
-              if (!m) m = html.match(/\$\s*([0-9]+(?:\.[0-9]+)?)/);
-              if (m) {
-                const p = Number(m[1]);
-                if (!isNaN(p)) {
-                  priceEl.textContent = "$" + p.toFixed(6);
+            const proxyUrls = [
+              `/api/birdeye?address=${CONTRACT_ADDRESS}`,
+              `/.netlify/functions/birdeye?address=${CONTRACT_ADDRESS}`,
+            ];
+            for (const url of proxyUrls) {
+              try {
+                const r = await fetch(url);
+                if (!r.ok) continue;
+                const json = await r.json();
+                if (json && json.price) {
+                  priceEl.textContent = "$" + Number(json.price).toFixed(6);
                   changeEl.textContent = "(via BirdEye)";
                   changeEl.className = "change";
                   volumeEl.textContent = "-";
                   return;
                 }
+              } catch (e) {
+                continue;
               }
             }
           } catch (beErr) {
-            console.warn("BirdEye fetch failed or CORS blocked", beErr);
+            console.warn("BirdEye proxy failed", beErr);
           }
 
           try {
