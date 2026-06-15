@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEPIPIXELCRAFT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body { background-color: #0f172a; color: white; }
+    .pixel-font { font-family: 'Press Start 2P', monospace; }
+    .nav-tab { transition: all 0.2s ease; }
+    .nav-tab.active { transform: scale(1.05); box-shadow: 0 0 0 3px white; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .pepe-card { transition: transform 0.3s ease; }
+    .pepe-card:hover { transform: scale(1.03); }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="bg-black border-b border-gray-700 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-yellow-400 flex items-center justify-center rounded">
+          <span class="text-black font-bold text-xl">P</span>
+        </div>
+        <div>
+          <span class="pixel-font text-2xl font-bold text-yellow-400">PEPIPIXELCRAFT</span>
+        </div>
+      </div>
+
+      <!-- Abas -->
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="showSection('inicio')" class="nav-tab px-5 py-2 rounded font-bold text-sm bg-green-500 text-black active" id="tab-inicio">INÍCIO</button>
+        <button onclick="showSection('galeria')" class="nav-tab px-5 py-2 rounded font-bold text-sm bg-yellow-400 text-black" id="tab-galeria">GALERIA</button>
+        <button onclick="showSection('comunidade')" class="nav-tab px-5 py-2 rounded font-bold text-sm bg-blue-500 text-white" id="tab-comunidade">COMUNIDADE</button>
+        <button onclick="showSection('craftar')" class="nav-tab px-5 py-2 rounded font-bold text-sm bg-orange-500 text-white" id="tab-craftar">CRAFTAR</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- INÍCIO -->
+  <div id="inicio" class="section active max-w-6xl mx-auto px-4 py-12">
+    <div class="text-center">
+      <h1 class="pixel-font text-6xl md:text-7xl font-bold text-yellow-400 mb-4">PEPIXEL</h1>
+      <p class="text-xl text-gray-300 mb-8">Sobrevivendo com estilo e bigode</p>
+      
+      <div class="max-w-md mx-auto bg-gray-900 rounded-2xl p-8 border border-gray-700">
+        <p class="text-lg">Bem-vindo ao mundo pixelado do Pepe! Aqui você encontra o maior acervo de momentos lendários do nosso herói de bigode.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALERIA -->
+  <div id="galeria" class="section max-w-6xl mx-auto px-4 py-12">
+    <h2 class="pixel-font text-3xl text-yellow-400 mb-8 text-center">GALERIA PEPIXEL</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card 1 -->
+      <div class="pepe-card bg-gray-900 rounded-2xl overflow-hidden border border-gray-700">
+        <div class="relative">
+          <img src="https://picsum.photos/id/1011/600/400" alt="Pepe no McDonald's" class="w-full">
+          <div class="absolute top-3 right-3 bg-yellow-400 text-black text-xs px-3 py-1 rounded pixel-font">LENDÁRIO</div>
+        </div>
+        <div class="p-5">
+          <h3 class="font-bold text-xl mb-1">TRABALHANDO NO MC</h3>
+          <p class="text-gray-400 text-sm">Level 100 de profissão • 9999 crafted</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="pepe-card bg-gray-900 rounded-2xl overflow-hidden border border-gray-700">
+        <div class="relative">
+          <img src="https://picsum.photos/id/1005/600/400" alt="Pepe Close-up" class="w-full">
+          <div class="absolute top-3 right-3 bg-yellow-400 text-black text-xs px-3 py-1 rounded pixel-font">LENDÁRIO</div>
+        </div>
+        <div class="p-5">
+          <h3 class="font-bold text-xl mb-1">O BIGODE LENDÁRIO</h3>
+          <p class="text-gray-400 text-sm">O clássico que nunca morre</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMUNIDADE -->
+  <div id="comunidade" class="section max-w-6xl mx-auto px-4 py-12">
+    <h2 class="pixel-font text-3xl text-blue-400 mb-8 text-center">COMUNIDADE</h2>
+    
+    <div class="max-w-2xl mx-auto bg-gray-900 rounded-2xl p-8 border border-gray-700">
+      <h3 class="font-bold text-xl mb-4">Deixe sua mensagem para o Pepe!</h3>
+      
+      <div class="space-y-4">
+        <input id="nome" type="text" placeholder="Seu nome" class="w-full bg-gray-800 border border-gray-600 rounded px-4 py-3">
+        <textarea id="mensagem" placeholder="Sua mensagem..." rows="4" class="w-full bg-gray-800 border border-gray-600 rounded px-4 py-3"></textarea>
+        
+        <button onclick="enviarMensagem()" class="w-full bg-blue-500 hover:bg-blue-600 py-3 rounded font-bold">ENVIAR MENSAGEM</button>
+      </div>
+      
+      <div id="mensagens-lista" class="mt-8 space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- CRAFTAR -->
+  <div id="craftar" class="section max-w-6xl mx-auto px-4 py-12">
+    <h2 class="pixel-font text-3xl text-orange-400 mb-8 text-center">CRAFTAR</h2>
+    
+    <div class="max-w-xl mx-auto text-center bg-gray-900 rounded-2xl p-10 border border-gray-700">
+      <p class="text-xl mb-6">Aqui você pode craftar itens lendários do universo Pepixel!</p>
+      <button onclick="craftarItem()" class="bg-orange-500 hover:bg-orange-600 px-10 py-4 rounded-xl font-bold text-lg">CRAFTAR ITEM LENDÁRIO</button>
+      <p id="craft-result" class="mt-6 text-green-400 hidden"></p>
+    </div>
+  </div>
+
+  <script>
+    function showSection(section) {
+      // Esconde todas as seções
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      
+      // Mostra a seção escolhida
+      document.getElementById(section).classList.add('active');
+      
+      // Atualiza as abas ativas
+      document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById('tab-' + section).classList.add('active');
+    }
+
+    // Sistema simples de mensagens (Comunidade)
+    function enviarMensagem() {
+      const nome = document.getElementById('nome').value.trim();
+      const msg = document.getElementById('mensagem').value.trim();
+      
+      if (!nome || !msg) {
+        alert('Preencha nome e mensagem!');
+        return;
+      }
+      
+      const container = document.getElementById('mensagens-lista');
+      const div = document.createElement('div');
+      div.className = 'bg-gray-800 p-4 rounded-xl';
+      div.innerHTML = `<strong>${nome}</strong><br><span class="text-gray-300">${msg}</span>`;
+      container.prepend(div);
+      
+      document.getElementById('nome').value = '';
+      document.getElementById('mensagem').value = '';
+    }
+
+    function craftarItem() {
+      const result = document.getElementById('craft-result');
+      result.textContent = 'Item lendário craftado com sucesso! 🎉';
+      result.classList.remove('hidden');
+      
+      setTimeout(() => {
+        result.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Inicia mostrando a aba INÍCIO
+    window.onload = function() {
+      showSection('inicio');
+    }
+  </script>
+</body>
+</html>
