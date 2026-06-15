@@ -295,27 +295,28 @@
       }
 
       // Inicia mostrando a aba INÍCIO
-      window.onload = function () {
+      window.onload = (function () {
         showSection("inicio");
-      };
-      // banner control
-      (function () {
-        try {
-          const key = "pepixel_hide_switch_banner";
-          const banner = document.getElementById("version-switch-banner");
-          const dismiss = document.getElementById("dismiss-banner");
-          if (!banner) return;
-          if (localStorage.getItem(key) === "1") return;
-          banner.classList.remove("hidden");
-          dismiss &&
-            dismiss.addEventListener("click", function () {
-              banner.classList.add("hidden");
-              try {
-                localStorage.setItem(key, "1");
-              } catch (e) {}
-            });
-        } catch (e) {}
-      })();
+      })(
+        // banner control
+        function () {
+          try {
+            const key = "pepixel_hide_switch_banner";
+            const banner = document.getElementById("version-switch-banner");
+            const dismiss = document.getElementById("dismiss-banner");
+            if (!banner) return;
+            if (localStorage.getItem(key) === "1") return;
+            banner.classList.remove("hidden");
+            dismiss &&
+              dismiss.addEventListener("click", function () {
+                banner.classList.add("hidden");
+                try {
+                  localStorage.setItem(key, "1");
+                } catch (e) {}
+              });
+          } catch (e) {}
+        },
+      )();
     </script>
   </body>
 </html>
