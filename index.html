@@ -70,6 +70,130 @@
         }
       })();
     </script>
+
+    <script>
+      // Real-time price + candles for Solana token contract
+      const CONTRACT_ADDRESS = "DMsSyCX6PCLCNs1i4DeTrv9X9n9t42m5UMzDakX7pump";
+      (function () {
+        const priceEl = document.getElementById("price");
+        const changeEl = document.getElementById("change");
+        const volumeEl = document.getElementById("volume");
+        const canvas = document.getElementById("candleCanvas");
+        if (!canvas) return; // page may not include panel
+        const ctx = canvas.getContext("2d");
+
+        async function fetchAndRender() {
+          try {
+            const infoRes = await fetch(`https://api.coingecko.com/api/v3/coins/solana/contract/${CONTRACT_ADDRESS}`);
+            if (infoRes.ok) {
+              const info = await infoRes.json();
+              if (info.market_data && info.market_data.current_price && info.market_data.current_price.usd) {
+                priceEl.textContent = "$" + Number(info.market_data.current_price.usd).toFixed(6);
+                const ch = info.market_data.price_change_percentage_24h;
+                changeEl.textContent = (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
+                changeEl.className = "change " + (ch >= 0 ? "positive" : "negative");
+                volumeEl.textContent = (info.market_data.total_volume && info.market_data.total_volume.usd) ? Math.round(info.market_data.total_volume.usd).toLocaleString() + " USD" : "-";
+              }
+              if (info.id) {
+                const chartRes = await fetch(`https://api.coingecko.com/api/v3/coins/${info.id}/market_chart?vs_currency=usd&days=1`);
+                if (chartRes.ok) {
+                  const chart = await chartRes.json();
+                  const prices = chart.prices || [];
+                  const candles = buildCandlesFromPrices(prices, 24);
+                  drawCandles(candles);
+                  return;
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('CoinGecko contract lookup failed', e);
+          }
+
+          try {
+            const simpleRes = await fetch(`https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${CONTRACT_ADDRESS}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`);
+            if (simpleRes.ok) {
+              const json = await simpleRes.json();
+              const key = Object.keys(json)[0];
+              const data = json[key];
+              if (data && data.usd) {
+                priceEl.textContent = "$" + Number(data.usd).toFixed(6);
+                const ch = data.usd_24h_change || 0;
+                changeEl.textContent = (ch >= 0 ? "+" : "") + Number(ch).toFixed(2) + "% (24h)";
+                changeEl.className = "change " + (ch >= 0 ? "positive" : "negative");
+                volumeEl.textContent = data.usd_24h_vol ? Number(data.usd_24h_vol).toLocaleString() + " USD" : "-";
+                drawSimulated();
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn('Simple price fetch failed', e);
+          }
+
+          drawSimulated();
+        }
+
+        function buildCandlesFromPrices(prices, targetCandles = 24) {
+          if (!prices || prices.length === 0) return [];
+          const bucketSize = Math.max(1, Math.floor(prices.length / targetCandles));
+          const candles = [];
+          for (let i = 0; i < prices.length; i += bucketSize) {
+            const chunk = prices.slice(i, i + bucketSize);
+            const o = chunk[0][1];
+            const c = chunk[chunk.length - 1][1];
+            let h = -Infinity, l = Infinity;
+            chunk.forEach(p => { h = Math.max(h, p[1]); l = Math.min(l, p[1]); });
+            candles.push({ o, h, l, c });
+          }
+          return candles.slice(-targetCandles);
+        }
+
+        function drawCandles(data) {
+          if (!data || data.length === 0) return drawSimulated();
+          ctx.fillStyle = "#0a1f0a";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          const w = canvas.width / data.length;
+          const values = data.flatMap(d => [d.h, d.l]);
+          const maxPrice = Math.max(...values);
+          const minPrice = Math.min(...values);
+          const range = Math.max(1e-8, maxPrice - minPrice);
+
+          data.forEach((candle, i) => {
+            const x = i * w + w * 0.2;
+            const bodyTop = canvas.height * (1 - (candle.h - minPrice) / range);
+            const bodyBottom = canvas.height * (1 - (candle.l - minPrice) / range);
+            const openY = canvas.height * (1 - (candle.o - minPrice) / range);
+            const closeY = canvas.height * (1 - (candle.c - minPrice) / range);
+
+            ctx.strokeStyle = candle.c >= candle.o ? "#00ff80" : "#ff6666";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + w / 2, bodyTop);
+            ctx.lineTo(x + w / 2, bodyBottom);
+            ctx.stroke();
+
+            const bodyHeight = Math.max(2, Math.abs(closeY - openY));
+            ctx.fillStyle = candle.c >= candle.o ? "#00ff80" : "#ff6666";
+            ctx.fillRect(x, Math.min(openY, closeY), w * 0.6, bodyHeight);
+          });
+        }
+
+        function drawSimulated() {
+          const data = [
+            { o: 0.0041, h: 0.0044, l: 0.004, c: 0.0043 },
+            { o: 0.0043, h: 0.0046, l: 0.0042, c: 0.0045 },
+            { o: 0.0045, h: 0.0047, l: 0.0043, c: 0.0044 },
+            { o: 0.0044, h: 0.0048, l: 0.0043, c: 0.0047 },
+            { o: 0.0047, h: 0.005, l: 0.0046, c: 0.0049 },
+            { o: 0.0049, h: 0.0051, l: 0.0047, c: 0.0048 },
+            { o: 0.0048, h: 0.0052, l: 0.0047, c: 0.0051 },
+          ];
+          drawCandles(data);
+        }
+
+        fetchAndRender();
+        setInterval(fetchAndRender, 60000);
+      })();
+    </script>
     <!-- HEADER -->
     <header
       class="border-b-4 border-[#4CAF50] bg-[#2E2E2E] py-4 sticky top-0 z-50"
@@ -147,6 +271,21 @@
     <section class="py-16 text-center border-b-8 border-[#4CAF50]">
       <h2 class="text-6xl font-bold title text-[#FFEB3B] mb-6">PEPIXEL</h2>
       <p class="text-2xl text-[#A5D6A7]">Sobrevivendo com estilo e bigode</p>
+    </section>
+
+    <!-- PRICE PANEL -->
+    <section class="py-8 text-center">
+      <div class="max-w-3xl mx-auto px-6">
+        <div class="price-panel inline-block text-left p-4 rounded-lg" style="background:#07170a; border:4px solid #234d2b; color:#e6ffea;">
+          <div class="price-header" style="font-weight:bold; margin-bottom:6px;">PEPIXEL (PXL)</div>
+          <div id="price" class="price" style="font-size:20px; font-weight:bold;">$0.000000</div>
+          <div id="change" class="change" style="margin-bottom:6px; color:#88cc88;">+0.00% (24h)</div>
+          <div class="candle-chart" style="margin-bottom:6px;">
+            <canvas id="candleCanvas" width="300" height="120"></canvas>
+          </div>
+          <div style="font-size:12px; color:#88cc88">Volume 24h: <span id="volume">-</span></div>
+        </div>
+      </div>
     </section>
 
     <!-- GALERIA -->
