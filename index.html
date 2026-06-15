@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     />
+    <link rel="stylesheet" href="assets/styles/site.css" />
 
     <style>
       html {
@@ -48,18 +49,25 @@
   </head>
   <body id="top" class="bg-[#3C2F1E] text-[#E5E5E5] minecraft-bg min-h-screen">
     <script>
-      (function(){
-        try{
+      (function () {
+        try {
           const url = new URL(window.location.href);
-          if (url.searchParams.has('no_mobile')) return;
-          const ua = navigator.userAgent || '';
-          const isMobileUA = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(ua);
-          const smallScreen = Math.max(window.screen.width || 0, window.screen.height || 0) <= 720;
+          if (url.searchParams.has("no_mobile")) return;
+          const ua = navigator.userAgent || "";
+          const isMobileUA =
+            /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+              ua,
+            );
+          const smallScreen =
+            Math.max(window.screen.width || 0, window.screen.height || 0) <=
+            720;
           if (isMobileUA || smallScreen) {
             // use replace to avoid polluting history
-            window.location.replace('mobile-index.html');
+            window.location.replace("mobile-index.html");
           }
-        }catch(e){/* ignore */}
+        } catch (e) {
+          /* ignore */
+        }
       })();
     </script>
     <!-- HEADER -->

@@ -1,0 +1,22 @@
+/* Global site overrides to enforce green background */
+html,
+body {
+  background-color: #1e3d1e !important;
+}
+
+/* Remove decorative/background images that may override the solid color */
+.minecraft-bg,
+body.minecraft-bg,
+html.minecraft-bg {
+  background-image: none !important;
+  background-color: #1e3d1e !important;
+}
+
+/* Ensure full-height pages use the color */
+.min-h-screen,
+html,
+body {
+  min-height: 100vh;
+}
+
+/* Optional: keep readable text defaults (don't force text color here) */
